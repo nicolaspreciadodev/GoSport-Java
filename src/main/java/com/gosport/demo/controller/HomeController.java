@@ -1,39 +1,35 @@
 package com.gosport.demo.controller;
 
-import com.gosport.demo.model.User;
-import com.gosport.demo.service.UserService;
-
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
-
 @Controller
 public class HomeController {
 
-    // Inyección de la dependencia UserService (Spring busca UserServiceImpl)
-    private final UserService userService;
-
-    public HomeController(UserService userService) {
-        // El constructor recibe la instancia del servicio que Spring Boot ya inicializó
-        this.userService = userService; 
+    /**
+     * Página de inicio pública (landing page)
+     */
+    @GetMapping("/")
+    public String index() {
+        return "index"; // Vista: index.html
     }
 
     /**
-     * Mapea la petición GET a la URL principal (/).
-     * Obtiene una lista de usuarios del servicio y la pasa a la vista.
+     * Página principal para usuarios autenticados
      */
-    @GetMapping("/")
-    public String index(Model model) {
+    @GetMapping("/home")
+    public String home(Model model, Authentication auth) {
+        // Obtener el nombre del usuario autenticado
+        String email = auth.getName();
         
-        // 1. Llama al servicio para obtener todos los usuarios
-        List<User> users = userService.findAllUsers();
+        // Obtener los roles del usuario
+        String roles = auth.getAuthorities().toString();
         
-        // 2. Adjunta la lista al objeto 'Model' para que la vista (Thymeleaf) la pueda usar
-        model.addAttribute("users", users);
+        model.addAttribute("userEmail", email);
+        model.addAttribute("userRoles", roles);
         
-        // 3. Retorna el nombre del archivo de la vista (Spring busca 'src/main/resources/templates/index.html')
-        return "index"; 
+        return "home"; // Vista: home.html
     }
 }

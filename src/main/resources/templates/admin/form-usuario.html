@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${accion} + ' Usuario - GoSports'">Formulario Usuario</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/admin/usuarios}">
+                <i class="bi bi-arrow-left"></i> Volver a Usuarios
+            </a>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-person-gear"></i> 
+                            <span th:text="${accion}">Crear</span> Usuario
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        
+                        <!-- Mensajes de error -->
+                        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-triangle"></i> <span th:text="${errorMessage}"></span>
+                        </div>
+
+                        <form method="POST" th:action="@{/admin/usuarios/guardar}" th:object="${usuario}">
+                            
+                            <!-- Campo oculto para ID (solo en edición) -->
+                            <input type="hidden" th:field="*{id}" />
+                            <input type="hidden" th:field="*{createdAt}" />
+                            
+                            <div class="row">
+                                <!-- Nombre completo -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">
+                                        <i class="bi bi-person"></i> Nombre Completo *
+                                    </label>
+                                    <input type="text" id="name" th:field="*{name}" 
+                                           class="form-control" required>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="bi bi-envelope"></i> Correo Electrónico *
+                                    </label>
+                                    <input type="email" id="email" th:field="*{email}" 
+                                           class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Contraseña -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="passwordPlain" class="form-label">
+                                        <i class="bi bi-key"></i> Contraseña
+                                        <span th:if="${usuario.id == null}" class="text-danger">*</span>
+                                        <span th:if="${usuario.id != null}" class="text-muted">(dejar vacío para mantener)</span>
+                                    </label>
+                                    <input type="password" id="passwordPlain" name="passwordPlain" 
+                                           class="form-control" 
+                                           th:required="${usuario.id == null}">
+                                </div>
+
+                                <!-- Teléfono -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefono" class="form-label">
+                                        <i class="bi bi-telephone"></i> Teléfono
+                                    </label>
+                                    <input type="text" id="telefono" th:field="*{telefono}" 
+                                           class="form-control" maxlength="20">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Tipo de Documento -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="tipoDocumento" class="form-label">
+                                        <i class="bi bi-card-text"></i> Tipo de Documento *
+                                    </label>
+                                    <select id="tipoDocumento" th:field="*{tipoDocumento}" 
+                                            class="form-select" required>
+                                        <option value="">Seleccione...</option>
+                                        <option value="CC">Cédula de Ciudadanía</option>
+                                        <option value="TI">Tarjeta de Identidad</option>
+                                        <option value="CE">Cédula de Extranjería</option>
+                                    </select>
+                                </div>
+
+                                <!-- Número de Identificación -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="numeroIdentificacion" class="form-label">
+                                        <i class="bi bi-hash"></i> Número de Identificación *
+                                    </label>
+                                    <input type="text" id="numeroIdentificacion" 
+                                           th:field="*{numeroIdentificacion}" 
+                                           class="form-control" maxlength="50" required>
+                                </div>
+
+                                <!-- Género -->
+                                <div class="col-md-4 mb-3">
+                                    <label for="genero" class="form-label">
+                                        <i class="bi bi-gender-ambiguous"></i> Género
+                                    </label>
+                                    <select id="genero" th:field="*{genero}" class="form-select">
+                                        <option value="">Seleccione...</option>
+                                        <option value="Masculino">Masculino</option>
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Rol -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="rol" class="form-label">
+                                        <i class="bi bi-shield-check"></i> Rol del Usuario *
+                                    </label>
+                                    <select id="rol" th:field="*{rol}" class="form-select" required>
+                                        <option value="USER">Usuario Normal (USER)</option>
+                                        <option value="ADMIN">Administrador (ADMIN)</option>
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        Los usuarios con rol ADMIN pueden gestionar todo el sistema.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <a th:href="@{/admin/usuarios}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-dark">
+                                    <i class="bi bi-save"></i> Guardar Usuario
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

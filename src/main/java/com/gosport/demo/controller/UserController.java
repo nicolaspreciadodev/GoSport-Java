@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime; // Necesario para created_at/updated_at
+import java.time.LocalDateTime;
 
 @Controller
 public class UserController {
@@ -20,76 +21,62 @@ public class UserController {
         this.userService = userService;
     }
 
-    // ------------------- 1. LOGIN -------------------
+    // ------------------- REGISTRO -------------------
 
-   
-   
-   
-    
-    // ------------------- 2. REGISTRO -------------------
-
-    // GET /registro: Muestra el formulario de registro
     @GetMapping("/registro")
     public String showRegisterForm() {
         return "register";
     }
 
-    // POST /registro: Procesa el registro
     @PostMapping("/registro")
     public String registerUser(
-            // Nuevos campos del formulario de Laravel:
             @RequestParam String nombre,
             @RequestParam String apellidos,
             @RequestParam String telefono,
             @RequestParam(name = "tipo_documento") String tipoDocumento,
             @RequestParam(name = "numero_identificacion") String numeroIdentificacion,
             @RequestParam String genero,
-            
-            // Campos existentes:
             @RequestParam String email,
             @RequestParam String password,
             @RequestParam(name = "password_confirmation") String passwordConfirmation,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         
-        // 1. Verificar que las contraseñas coincidan
+        // Verificar que las contraseñas coincidan
         if (!password.equals(passwordConfirmation)) {
             model.addAttribute("errorMessage", "Las contraseñas no coinciden.");
             return "register";
         }
         
         try {
-            // 2. Crear la nueva entidad User y asignar los campos
             User newUser = new User();
             
-            // Asignar los campos
-            newUser.setName(nombre + " " + apellidos); // Combinar nombre y apellido
+            // Asignar campos
+            newUser.setName(nombre + " " + apellidos);
             newUser.setEmail(email);
-            newUser.setPassword(password); // SIN CIFRADO, solo para prueba inicial
-            
-            // Campos de detalle
+            newUser.setPassword(password); // Se cifrará en el servicio
             newUser.setTelefono(telefono);
             newUser.setTipoDocumento(tipoDocumento);
             newUser.setNumeroIdentificacion(numeroIdentificacion);
             newUser.setGenero(genero);
-            
-            // Timestamps (opcional)
+            newUser.setRol("USER"); // ⭐ Por defecto todos son USER
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());
 
-            // 3. Guardar en la base de datos
+            // Guardar usuario (la contraseña se cifrará en UserServiceImpl)
             userService.saveUser(newUser);
 
-            // 4. Éxito: Redirigir al login con mensaje de éxito
-            model.addAttribute("successMessage", "¡Registro exitoso! Ya puedes iniciar sesión.");
-            return "login"; 
+            // Éxito: Redirigir al login con mensaje
+            redirectAttributes.addFlashAttribute("successMessage", 
+                "¡Registro exitoso! Ya puedes iniciar sesión.");
+            return "redirect:/login";
             
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            // Manejar error de email/identificación duplicada
-            model.addAttribute("errorMessage", "Error al registrar: El correo electrónico o el número de identificación ya están registrados.");
+            model.addAttribute("errorMessage", 
+                "Error: El correo electrónico o número de identificación ya están registrados.");
             return "register";
         } catch (Exception e) {
-            // Error genérico
-            model.addAttribute("errorMessage", "Error interno del servidor. Inténtalo de nuevo.");
+            model.addAttribute("errorMessage", "Error interno del servidor.");
             return "register";
         }
     }

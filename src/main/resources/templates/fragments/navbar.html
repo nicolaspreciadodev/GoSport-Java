@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
+<!-- Navbar para usuarios NO autenticados (Landing Page) -->
 <nav th:fragment="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
         
@@ -16,11 +18,22 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
+                <!-- Mostrar solo si NO está autenticado -->
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a class="nav-link" th:href="@{/registro}">Registrarse</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a class="btn btn-sm btn-light" th:href="@{/login}">Iniciar Sesión</a>
+                </li>
+                
+                <!-- Mostrar solo si ESTÁ autenticado -->
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/home}">Mi Cuenta</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-light">Cerrar Sesión</button>
+                    </form>
                 </li>
             </ul>
         </div>
