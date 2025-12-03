@@ -26,10 +26,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Usuario no encontrado: " + email);
         }
 
+        // ⭐ VERIFICAR SI EL USUARIO ESTÁ ACTIVO
+        if (!user.getActivo()) {
+            throw new UsernameNotFoundException("Usuario inactivo: " + email);
+        }
+
         // Crear objeto UserDetails de Spring Security
         return new org.springframework.security.core.userdetails.User(
             user.getEmail(),
             user.getPassword(),
+            true, // enabled
+            true, // accountNonExpired
+            true, // credentialsNonExpired
+            true, // accountNonLocked
             Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRol()))
         );
     }

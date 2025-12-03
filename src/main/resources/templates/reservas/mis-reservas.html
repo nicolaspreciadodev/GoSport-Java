@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Mis Reservas - GoSports</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        .reserva-card {
+            transition: all 0.3s;
+            border-left: 4px solid #dee2e6;
+        }
+        .reserva-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .reserva-card.pendiente {
+            border-left-color: #ffc107;
+        }
+        .reserva-card.confirmada {
+            border-left-color: #28a745;
+        }
+        .reserva-card.cancelada {
+            border-left-color: #dc3545;
+        }
+        .reserva-card.completada {
+            border-left-color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/home}">
+                <img th:src="@{/images/Logo_Gosport.jpeg}" alt="GoSports Logo" style="height: 40px; margin-right: 10px;">
+                <span class="fw-bold">GoSports</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/canchas}">
+                            <i class="bi bi-geo-alt"></i> Canchas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/reservas/mis-reservas}">
+                            <i class="bi bi-calendar-check"></i> Mis Reservas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <span class="navbar-text text-white me-3">
+                            <i class="bi bi-person-circle"></i> 
+                            <span sec:authentication="name">Usuario</span>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-light">
+                                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        
+        <!-- Título -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1 class="display-5">
+                    <i class="bi bi-calendar-check-fill"></i> Mis Reservas
+                </h1>
+                <p class="lead text-muted">Gestiona todas tus reservas de canchas</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a th:href="@{/canchas}" class="btn btn-dark">
+                    <i class="bi bi-plus-circle"></i> Nueva Reserva
+                </a>
+            </div>
+        </div>
+
+        <!-- Mensajes -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Estadísticas Rápidas -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-event text-primary" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2 mb-0" th:text="${totalReservas}">0</h3>
+                        <small class="text-muted">Total Reservas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-hourglass-split text-warning" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2 mb-0" th:text="${reservasPendientes}">0</h3>
+                        <small class="text-muted">Pendientes</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2 mb-0" th:text="${reservasConfirmadas}">0</h3>
+                        <small class="text-muted">Confirmadas</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-currency-dollar text-info" style="font-size: 2rem;"></i>
+                        <h3 class="mt-2 mb-0">$<span th:text="${#numbers.formatDecimal(totalGastado, 0, 'COMMA', 0, 'POINT')}">0</span></h3>
+                        <small class="text-muted">Total Gastado</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <form th:action="@{/reservas/mis-reservas}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="estado" class="form-label">Estado</label>
+                        <select id="estado" name="estado" class="form-select">
+                            <option value="">Todos los estados</option>
+                            <option value="PENDIENTE" th:selected="${estadoFiltro == 'PENDIENTE'}">Pendiente</option>
+                            <option value="CONFIRMADA" th:selected="${estadoFiltro == 'CONFIRMADA'}">Confirmada</option>
+                            <option value="CANCELADA" th:selected="${estadoFiltro == 'CANCELADA'}">Cancelada</option>
+                            <option value="COMPLETADA" th:selected="${estadoFiltro == 'COMPLETADA'}">Completada</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="desde" class="form-label">Desde</label>
+                        <input type="date" id="desde" name="desde" class="form-control" th:value="${fechaDesde}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="hasta" class="form-label">Hasta</label>
+                        <input type="date" id="hasta" name="hasta" class="form-control" th:value="${fechaHasta}">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-dark w-100">
+                            <i class="bi bi-funnel"></i> Filtrar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabs de Navegación -->
+        <ul class="nav nav-pills mb-4" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="proximas-tab" data-bs-toggle="tab" 
+                        data-bs-target="#proximas" type="button" role="tab">
+                    <i class="bi bi-calendar-plus"></i> Próximas (<span th:text="${#lists.size(reservasProximas)}">0</span>)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="historial-tab" data-bs-toggle="tab" 
+                        data-bs-target="#historial" type="button" role="tab">
+                    <i class="bi bi-clock-history"></i> Historial (<span th:text="${#lists.size(reservasHistorial)}">0</span>)
+                </button>
+            </li>
+        </ul>
+
+        <!-- Contenido de Tabs -->
+        <div class="tab-content">
+            
+            <!-- Tab: Próximas Reservas -->
+            <div class="tab-pane fade show active" id="proximas" role="tabpanel">
+                <div th:if="${#lists.isEmpty(reservasProximas)}" class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> 
+                    No tienes reservas próximas. <a th:href="@{/canchas}">¡Haz tu primera reserva!</a>
+                </div>
+
+                <div class="row g-4">
+                    <div th:each="reserva : ${reservasProximas}" class="col-md-6">
+                        <div class="card reserva-card shadow-sm h-100"
+                             th:classappend="${#strings.toLowerCase(reserva.estado)}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title mb-0" th:text="${reserva.cancha.nombre}">Cancha Bosa 1</h5>
+                                    <span th:if="${reserva.estado == 'PENDIENTE'}" class="badge bg-warning">Pendiente</span>
+                                    <span th:if="${reserva.estado == 'CONFIRMADA'}" class="badge bg-success">Confirmada</span>
+                                    <span th:if="${reserva.estado == 'CANCELADA'}" class="badge bg-danger">Cancelada</span>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">FECHA</small>
+                                        <p class="mb-0 fw-bold">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span th:text="${#temporals.format(reserva.fecha, 'dd/MM/yyyy')}">01/01/2024</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">HORA</small>
+                                        <p class="mb-0 fw-bold">
+                                            <i class="bi bi-clock"></i>
+                                            <span th:text="${reserva.horaInicio}">10:00</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">DURACIÓN</small>
+                                        <p class="mb-0">
+                                            <span th:text="${reserva.duracion}">1</span> 
+                                            <span th:text="${reserva.duracion == 1 ? 'hora' : 'horas'}">hora</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">PRECIO</small>
+                                        <p class="mb-0 text-success fw-bold">
+                                            $<span th:text="${#numbers.formatDecimal(reserva.precioTotal, 0, 'COMMA', 0, 'POINT')}">80000</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <small class="text-muted">UBICACIÓN</small>
+                                    <p class="mb-0">
+                                        <i class="bi bi-geo-alt text-danger"></i>
+                                        <span th:text="${reserva.cancha.direccion}">Dirección</span>
+                                    </p>
+                                </div>
+
+                                <!-- Botones de Acción -->
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/reservas/detalle/{id}(id=${reserva.id})}" 
+                                       class="btn btn-sm btn-outline-primary flex-fill">
+                                        <i class="bi bi-eye"></i> Ver Detalle
+                                    </a>
+                                    
+                                    <button th:if="${reserva.estado == 'PENDIENTE' || reserva.estado == 'CONFIRMADA'}"
+                                            type="button" class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal" 
+                                            th:data-bs-target="'#modalCancelar' + ${reserva.id}">
+                                        <i class="bi bi-x-circle"></i> Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Cancelar -->
+                        <div class="modal fade" th:id="'modalCancelar' + ${reserva.id}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title">
+                                            <i class="bi bi-exclamation-triangle"></i> Cancelar Reserva
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro de que deseas cancelar esta reserva?</p>
+                                        <div class="alert alert-warning">
+                                            <strong>Cancha:</strong> <span th:text="${reserva.cancha.nombre}"></span><br>
+                                            <strong>Fecha:</strong> <span th:text="${#temporals.format(reserva.fecha, 'dd/MM/yyyy')}"></span><br>
+                                            <strong>Hora:</strong> <span th:text="${reserva.horaInicio}"></span>
+                                        </div>
+                                        <p class="text-muted small">
+                                            <i class="bi bi-info-circle"></i> Esta acción no se puede deshacer.
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, mantener</button>
+                                        <form method="POST" th:action="@{/reservas/cancelar/{id}(id=${reserva.id})}" class="d-inline">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="bi bi-x-circle"></i> Sí, cancelar reserva
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Historial -->
+            <div class="tab-pane fade" id="historial" role="tabpanel">
+                <div th:if="${#lists.isEmpty(reservasHistorial)}" class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> No tienes reservas en el historial.
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Cancha</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Duración</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="reserva : ${reservasHistorial}">
+                                <td>
+                                    <strong th:text="${reserva.cancha.nombre}">Cancha</strong><br>
+                                    <small class="text-muted" th:text="${reserva.cancha.deporte.nombre}">Fútbol</small>
+                                </td>
+                                <td th:text="${#temporals.format(reserva.fecha, 'dd/MM/yyyy')}">01/01/2024</td>
+                                <td th:text="${reserva.horaInicio}">10:00</td>
+                                <td>
+                                    <span th:text="${reserva.duracion}">1</span>
+                                    <span th:text="${reserva.duracion == 1 ? 'hora' : 'horas'}">hora</span>
+                                </td>
+                                <td class="text-success fw-bold">
+                                    $<span th:text="${#numbers.formatDecimal(reserva.precioTotal, 0, 'COMMA', 0, 'POINT')}">80000</span>
+                                </td>
+                                <td>
+                                    <span th:if="${reserva.estado == 'COMPLETADA'}" class="badge bg-secondary">Completada</span>
+                                    <span th:if="${reserva.estado == 'CANCELADA'}" class="badge bg-danger">Cancelada</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/reservas/detalle/{id}(id=${reserva.id})}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+Listado de rutas de carpetas para el volumen HHD
+El n£mero de serie del volumen es 9499-80FF
+D:.
+|   .gitattributes
+|   .gitignore
+|   estructura.txt
+|   mvnw
+|   mvnw.cmd
+|   pom.xml
+|   
++---.mvn
+|   \---wrapper
+|           maven-wrapper.properties
+|           
++---.vscode
+|       settings.json
+|       
++---src
+|   +---main
+|   |   +---java
+|   |   |   \---com
+|   |   |       \---gosport
+|   |   |           \---demo
+|   |   |               |   GoSportApplication.java
+|   |   |               |   
+|   |   |               +---config
+|   |   |               |       DataInitializer.java
+|   |   |               |       SecurityConfig.java
+|   |   |               |       
+|   |   |               +---controller
+|   |   |               |   |   AdminController.java
+|   |   |               |   |   CanchaController.java
+|   |   |               |   |   CanchaPublicController.java
+|   |   |               |   |   DashboardController.java
+|   |   |               |   |   HomeController.java
+|   |   |               |   |   LoginController.java
+|   |   |               |   |   ReservaController.java
+|   |   |               |   |   UserController.java
+|   |   |               |   |   
+|   |   |               |   \---Admin
+|   |   |               |           AdminReservaController.java
+|   |   |               |           
+|   |   |               +---model
+|   |   |               |       Cancha.java
+|   |   |               |       Deporte.java
+|   |   |               |       Reserva.java
+|   |   |               |       User.java
+|   |   |               |       UserHistorial.java
+|   |   |               |       
+|   |   |               +---repository
+|   |   |               |       CanchaRepository.java
+|   |   |               |       DeporteRepository.java
+|   |   |               |       ReservaRepository.java
+|   |   |               |       UserHistorialRepository.java
+|   |   |               |       UserRepository.java
+|   |   |               |       
+|   |   |               +---security
+|   |   |               |       UserDetailsServiceImpl.java
+|   |   |               |       
+|   |   |               \---service
+|   |   |                   |   PdfExportService.java
+|   |   |                   |   ReservaService.java
+|   |   |                   |   UserService.java
+|   |   |                   |   
+|   |   |                   \---impl
+|   |   |                           UserServiceImpl.java
+|   |   |                           
+|   |   \---resources
+|   |       |   application.properties
+|   |       |   
+|   |       +---static
+|   |       |   +---css
+|   |       |   |       inicio.css
+|   |       |   |       
+|   |       |   \---images
+|   |       |           Basquet.png
+|   |       |           Futbol.png
+|   |       |           Imagenlandingpage.png
+|   |       |           Logo_Gosport.jpeg
+|   |       |           Tenis.png
+|   |       |           
+|   |       \---templates
+|   |           |   home.html
+|   |           |   index.html
+|   |           |   login.html
+|   |           |   register.html
+|   |           |   
+|   |           +---admin
+|   |           |   |   Dashboard.html
+|   |           |   |   form-usuario.html
+|   |           |   |   historial-usuario.html
+|   |           |   |   usuarios.html
+|   |           |   |   
+|   |           |   +---canchas
+|   |           |   |       form.html
+|   |           |   |       lista.html
+|   |           |   |       
+|   |           |   \---reservas
+|   |           |           lista-reserva.html
+|   |           |           
+|   |           +---canchas
+|   |           |       detalle.html
+|   |           |       lista-publica.html
+|   |           |       
+|   |           +---fragments
+|   |           |       navbar.html
+|   |           |       
+|   |           \---reservas
+|   |                   detalle-reserva.html
+|   |                   formulario-reserva.html
+|   |                   mis-reservas.html
+|   |                   
+|   \---test
+|       \---java
+|           \---com
+|               \---gosport
+|                   \---demo
+|                           GoSportApplicationTests.java
+|                           
+\---target
+    |   demo-0.0.1-SNAPSHOT.jar
+    |   demo-0.0.1-SNAPSHOT.jar.original
+    |   
+    +---classes
+    |   |   application.properties
+    |   |   
+    |   +---com
+    |   |   \---gosport
+    |   |       \---demo
+    |   |           |   GoSportApplication.class
+    |   |           |   
+    |   |           +---config
+    |   |           |       DataInitializer.class
+    |   |           |       SecurityConfig.class
+    |   |           |       
+    |   |           +---controller
+    |   |           |   |   AdminController.class
+    |   |           |   |   CanchaController.class
+    |   |           |   |   CanchaPublicController.class
+    |   |           |   |   DashboardController.class
+    |   |           |   |   HomeController.class
+    |   |           |   |   LoginController.class
+    |   |           |   |   ReservaController.class
+    |   |           |   |   UserController.class
+    |   |           |   |   
+    |   |           |   \---Admin
+    |   |           |           AdminReservaController.class
+    |   |           |           
+    |   |           +---model
+    |   |           |       Cancha.class
+    |   |           |       Deporte.class
+    |   |           |       Reserva$EstadoReserva.class
+    |   |           |       Reserva.class
+    |   |           |       User.class
+    |   |           |       UserHistorial.class
+    |   |           |       
+    |   |           +---repository
+    |   |           |       CanchaRepository.class
+    |   |           |       DeporteRepository.class
+    |   |           |       ReservaRepository.class
+    |   |           |       UserHistorialRepository.class
+    |   |           |       UserRepository.class
+    |   |           |       
+    |   |           +---security
+    |   |           |       UserDetailsServiceImpl.class
+    |   |           |       
+    |   |           \---service
+    |   |               |   PdfExportService.class
+    |   |               |   ReservaService.class
+    |   |               |   UserService.class
+    |   |               |   
+    |   |               \---impl
+    |   |                       UserServiceImpl.class
+    |   |                       
+    |   +---static
+    |   |   +---css
+    |   |   |       inicio.css
+    |   |   |       
+    |   |   \---images
+    |   |           Basquet.png
+    |   |           Futbol.png
+    |   |           Imagenlandingpage.png
+    |   |           Logo_Gosport.jpeg
+    |   |           Tenis.png
+    |   |           
+    |   \---templates
+    |       |   home.html
+    |       |   index.html
+    |       |   login.html
+    |       |   register.html
+    |       |   
+    |       +---admin
+    |       |   |   Dashboard.html
+    |       |   |   form-usuario.html
+    |       |   |   historial-usuario.html
+    |       |   |   usuarios.html
+    |       |   |   
+    |       |   +---canchas
+    |       |   |       form.html
+    |       |   |       lista.html
+    |       |   |       
+    |       |   \---reservas
+    |       |           lista-reserva.html
+    |       |           
+    |       +---canchas
+    |       |       detalle.html
+    |       |       lista-publica.html
+    |       |       
+    |       +---fragments
+    |       |       navbar.html
+    |       |       
+    |       \---reservas
+    |               detalle-reserva.html
+    |               formulario-reserva.html
+    |               mis-reservas.html
+    |               
+    +---generated-sources
+    |   \---annotations
+    +---generated-test-sources
+    |   \---test-annotations
+    +---maven-archiver
+    |       pom.properties
+    |       
+    +---maven-status
+    |   \---maven-compiler-plugin
+    |       +---compile
+    |       |   \---default-compile
+    |       |           createdFiles.lst
+    |       |           inputFiles.lst
+    |       |           
+    |       \---testCompile
+    |           \---default-testCompile
+    |                   createdFiles.lst
+    |                   inputFiles.lst
+    |                   
+    +---surefire-reports
+    |       2025-11-30T09-39-01_412.dumpstream
+    |       com.gosport.demo.GoSportApplicationTests.txt
+    |       TEST-com.gosport.demo.GoSportApplicationTests.xml
+    |       
+    \---test-classes
+        \---com
+            \---gosport
+                \---demo
+                        GoSportApplicationTests.class
+                        

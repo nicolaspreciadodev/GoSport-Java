@@ -24,6 +24,21 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <!-- Enlace a Canchas -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/canchas}">
+                            <i class="bi bi-geo-alt"></i> Canchas
+                        </a>
+                    </li>
+
+                    <!-- Enlace a Mis Reservas -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/reservas/mis-reservas}">
+                            <i class="bi bi-calendar-check"></i> Mis Reservas
+                        </a>
+                    </li>
+                    
+                    <!-- Usuario autenticado -->
                     <li class="nav-item">
                         <span class="navbar-text text-white me-3">
                             <i class="bi bi-person-circle"></i> 
@@ -74,15 +89,33 @@
                 <!-- Contenido exclusivo para ADMIN -->
                 <div sec:authorize="hasRole('ADMIN')" class="alert alert-info mt-4">
                     <h5><i class="bi bi-shield-check"></i> Panel de Administrador</h5>
-                    <p>Como administrador, puedes gestionar todos los usuarios del sistema.</p>
-                    <a th:href="@{/admin/usuarios}" class="btn btn-dark">Ver Usuarios</a>
+                    <p>Como administrador, puedes gestionar todos los usuarios y canchas del sistema.</p>
+                    <a th:href="@{/admin/usuarios}" class="btn btn-dark me-2">Ver Usuarios</a>
+                    <a th:href="@{/admin/canchas}" class="btn btn-dark">Gestionar Canchas</a>
                 </div>
 
                 <!-- Contenido para todos los usuarios autenticados -->
-                <div class="mt-4">
-                    <h3>Reserva tu cancha</h3>
-                    <p>Explora las canchas disponibles y haz tu reserva en minutos.</p>
-                    <a href="#" class="btn btn-dark">Ver Canchas Disponibles</a>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-geo-alt-fill text-primary" style="font-size: 3rem;"></i>
+                                <h3 class="mt-3">Explora Canchas</h3>
+                                <p>Encuentra la cancha perfecta para tu deporte favorito.</p>
+                                <a th:href="@{/canchas}" class="btn btn-dark">Ver Canchas Disponibles</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <i class="bi bi-calendar-check-fill text-success" style="font-size: 3rem;"></i>
+                                <h3 class="mt-3">Mis Reservas</h3>
+                                <p>Gestiona y consulta todas tus reservas activas.</p>
+                                <a th:href="@{/reservas/mis-reservas}" class="btn btn-success">Ver Mis Reservas</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

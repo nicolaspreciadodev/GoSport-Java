@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
-<!-- Navbar para usuarios NO autenticados (Landing Page) -->
+<!-- Navbar Mejorado con Sistema de Reservas -->
 <nav th:fragment="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
         
@@ -17,8 +17,14 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <!-- Mostrar solo si NO está autenticado -->
+            <ul class="navbar-nav ms-auto align-items-center">
+                
+                <!-- Enlaces para usuarios NO autenticados -->
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/canchas}">
+                        <i class="bi bi-geo-alt"></i> Canchas
+                    </a>
+                </li>
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
                     <a class="nav-link" th:href="@{/registro}">Registrarse</a>
                 </li>
@@ -26,14 +32,46 @@
                     <a class="btn btn-sm btn-light" th:href="@{/login}">Iniciar Sesión</a>
                 </li>
                 
-                <!-- Mostrar solo si ESTÁ autenticado -->
+                <!-- Enlaces para usuarios AUTENTICADOS -->
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/home}">Mi Cuenta</a>
+                    <a class="nav-link" th:href="@{/canchas}">
+                        <i class="bi bi-geo-alt"></i> Canchas
+                    </a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/logout}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-outline-light">Cerrar Sesión</button>
-                    </form>
+                    <a class="nav-link" th:href="@{/reservas/mis-reservas}">
+                        <i class="bi bi-calendar-check"></i> Mis Reservas
+                    </a>
+                </li>
+                
+                <!-- Enlaces solo para ADMIN -->
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                
+                <!-- Menú de usuario autenticado -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> 
+                        <span sec:authentication="name">Usuario</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" th:href="@{/home}">
+                                <i class="bi bi-house"></i> Mi Cuenta
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

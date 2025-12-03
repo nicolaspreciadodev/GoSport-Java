@@ -157,7 +157,7 @@
 
                         <!-- Botón de reserva -->
                         <div sec:authorize="isAuthenticated()">
-                            <a href="#" class="btn btn-dark btn-lg w-100">
+                            <a th:href="@{/reservas/nueva/{id}(id=${cancha.id})}" class="btn btn-success">
                                 <i class="bi bi-calendar-check"></i> Reservar Ahora
                             </a>
                             <p class="text-center text-muted mt-2 mb-0">
