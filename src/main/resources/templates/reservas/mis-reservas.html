@@ -259,7 +259,7 @@
                                         <i class="bi bi-eye"></i> Ver Detalle
                                     </a>
                                     
-                                    <!-- ⭐ BOTÓN CANCELAR - CORREGIDO -->
+                                    <!-- BOTÓN CANCELAR -->
                                     <button th:if="${reserva.estado.name() == 'PENDIENTE' || reserva.estado.name() == 'CONFIRMADA'}"
                                             type="button" 
                                             class="btn btn-sm btn-outline-danger"
@@ -327,7 +327,7 @@
 
     </div>
 
-    <!-- ⭐ MODAL PARA CONFIRMAR CANCELACIÓN -->
+    <!-- ⭐ MODAL PARA CONFIRMAR CANCELACIÓN (CORREGIDO) -->
     <div class="modal fade" id="modalCancelarReserva" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -348,7 +348,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, mantener</button>
+                    <!-- Formulario con CSRF inyectado -->
                     <form method="POST" id="formCancelarReserva" action="">
+                        <!-- ⭐ AQUÍ ESTÁ LA SOLUCIÓN: Token CSRF -->
+                        <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-danger">
                             <i class="bi bi-x-circle"></i> Sí, cancelar reserva
                         </button>
@@ -360,7 +363,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- ⭐ SCRIPT PARA MANEJAR LA CANCELACIÓN -->
     <script>
         function confirmarCancelacion(event) {
             event.preventDefault();

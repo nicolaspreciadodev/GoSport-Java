@@ -336,11 +336,21 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, mantener reserva</button>
-                    <form method="POST" th:action="@{/reservas/cancelar/{id}(id=${reserva.id})}" class="d-inline">
+                    <form th:action="@{/reservas/cancelar/{id}(id=${reserva.id})}"
+                    method="post"
+                        class="d-inline">
+
+                        <!-- CSRF TOKEN -->
+                        <input type="hidden"
+                            th:if="${_csrf != null}"
+                            th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}" />
+
                         <button type="submit" class="btn btn-danger">
                             <i class="bi bi-x-circle"></i> Sí, cancelar reserva
                         </button>
                     </form>
+
                 </div>
             </div>
         </div>
